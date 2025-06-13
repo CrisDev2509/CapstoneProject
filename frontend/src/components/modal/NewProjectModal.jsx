@@ -44,6 +44,7 @@ export default function NewProjectModal({ visible, onClose, onProjectCreated }) 
         <h2>Nuevo Proyecto</h2>
         <form onSubmit={handleSubmit}>
           <input
+            class="control"
             type="text"
             placeholder="Nombre del proyecto"
             value={titulo}
@@ -51,18 +52,20 @@ export default function NewProjectModal({ visible, onClose, onProjectCreated }) 
             required
           />
           <input
+            class="control"
             type="date"
             value={fechaInicio}
             onChange={(e) => setFechaInicio(e.target.value)}
             required
           />
           <input
+            class="control"
             type="date"
             value={fechaFin}
             onChange={(e) => setFechaFin(e.target.value)}
             required
           />
-          <button type="submit">Crear</button>
+          <button class="control" type="submit">Crear</button>
         </form>
       </div>
     </div>

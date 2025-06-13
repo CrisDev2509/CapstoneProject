@@ -172,6 +172,59 @@ app.post('/tareas', async (req, res) => {
   }
 });
 
+app.patch('/tareas/:id', async (req, res) => {
+  const { id } = req.params;
+  const { nombre, fecha_inicio, fecha_fin, presupuesto, parentId, metadata } = req.body;
+
+  try {
+    const tarea = await prisma.tarea.update({
+      where: { id: parseInt(id) },
+      data: {
+        nombre,
+        fecha_inicio: fecha_inicio ? new Date(fecha_inicio) : undefined,
+        fecha_fin: fecha_fin ? new Date(fecha_fin) : undefined,
+        presupuesto: presupuesto !== undefined ? parseFloat(presupuesto) : undefined,
+        parentId: parentId !== undefined ? parseInt(parentId) : undefined,
+        metadata: metadata !== undefined ? metadata : undefined,
+      },
+      include: {
+        subtareas: true
+      }
+    });
+
+    res.json(tarea);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al actualizar la tarea' });
+  }
+});
+
+app.delete('/tareas/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Opcional: Verifica si existe primero
+    const tarea = await prisma.tarea.findUnique({
+      where: { id: parseInt(id) },
+    });
+
+    if (!tarea) {
+      return res.status(404).json({ error: 'Tarea no encontrada' });
+    }
+
+    // Borra la tarea
+    await prisma.tarea.delete({
+      where: { id: parseInt(id) },
+    });
+
+    res.json({ message: 'Tarea eliminada exitosamente' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al eliminar la tarea' });
+  }
+});
+
+
 // plus para las tareas: Obtener tareas por proyecto (con jerarquía)
 app.get('/proyectos/:id/tareas', async (req, res) => {
   const { id } = req.params;

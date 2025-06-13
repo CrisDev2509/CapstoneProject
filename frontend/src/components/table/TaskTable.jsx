@@ -43,6 +43,7 @@ export default function TaskTable({ tasks, onUpdateTasks, projectId }) {
         <span>Fecha Fin</span>
         <span>Presupuesto</span>
         <span>Responsable</span>
+        <span>Acciones</span>
       </div>
       <div className="table-body">
         {tasks.map((task) => (
@@ -54,15 +55,21 @@ export default function TaskTable({ tasks, onUpdateTasks, projectId }) {
             projectId={projectId}
           />
         ))}
-      </div>
-      <div className="table-footer">
-        <input
-          type="text"
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-          placeholder="Nueva tarea..."
-        />
-        <button onClick={handleAddTask}>Añadir</button>
+
+          <div className="task-row">
+            <div className="task-name">
+              <input
+                class="control"
+                type="text"
+                value={newTask}
+                onChange={(e) => setNewTask(e.target.value)}
+                placeholder="Nueva tarea..."
+              />
+            </div>
+            <div className="task-actions">
+              <button onClick={handleAddTask}><i class="fa-solid fa-plus"></i></button>
+            </div>
+        </div>
       </div>
     </div>
   );
