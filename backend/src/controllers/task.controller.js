@@ -10,6 +10,16 @@ exports.getAll = async (req, res) => {
   }
 };
 
+exports.getByProject = async(req, res) => {
+  try {
+    const tareas = await taskService.getByProject(parseInt(req.params.id));
+    res.json(tareas);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener tareas' + error.message });
+  }
+}
+
 exports.create = async (req, res) => {
   try {
     const nuevaTarea = await taskService.create(req.body);

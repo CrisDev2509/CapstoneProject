@@ -61,7 +61,7 @@ export default function Gantt({ tasks }) {
               </td>
               <td style={{ padding: "8px", border: "1px solid #ddd", position: "relative" }}>
                 <div style={{ position: "relative", height: "20px", backgroundColor: "#eee" }}>
-                  <div style={getBarStyle(task.end, task.start)} />
+                  <div style={getBarStyle(task.start, task.end)} />
                 </div>
               </td>
             </tr>

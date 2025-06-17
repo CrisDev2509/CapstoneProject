@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 import { jsPDF } from "jspdf";
 
-import "./Project.css"; // Asegúrate de tener un archivo CSS para estilos
-import Footer from "../../components/footer/Footer"; // Asegúrate de que la ruta sea correcta
-import ModalProject from "../../components/modal-project/ModalProject"; // Asegúrate de que la ruta sea correcta
+import "./Project.css"; 
+import Footer from "../../components/footer/Footer"; 
+import ModalProject from "../../components/modal-project/ModalProject";
 
-const Project = ({ projectId }) => {
+const Project = () => {
+  const navigate = useNavigate();
+  const { projectId } = useParams();
+  const [projects, setProjects] = useState(null);
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -19,6 +23,24 @@ const Project = ({ projectId }) => {
   const [objetivos, setObjetivos] = useState(
     Array.isArray(project?.objetivos) ? project.objetivos : []
   );
+
+  const handleNavigate = (projectId) => {
+    navigate(`/project/${projectId}`);
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(`http://localhost:5000/proyectos`)
+      .then((res) => res.json())
+      .then((data) => {
+        setProjects(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error al cargar los proyectos:", err);
+        setLoading(false);
+      });
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -209,42 +231,27 @@ const Project = ({ projectId }) => {
               <i className="fas fa-link"></i>
             </button>
           </div>
-          <ul class="project-list">
-            <li>
-              <button>
-                <i class="fas fa-folder"></i> Proyecto 1
-              </button>
-            </li>
-            <li>
-              <button>
-                <i class="fas fa-folder"></i> Proyecto 2
-              </button>
-            </li>
-            <li>
-              <button class="active">
-                <i class="fas fa-folder"> </i> PROYECTO 3
-              </button>
-            </li>
-            <li>
-              <button>
-                <i class="fas fa-folder"></i> Proyecto 4
-              </button>
-            </li>
-            <li>
-              <button>
-                <i class="fas fa-folder"></i> Proyecto 5
-              </button>
-            </li>
-            <li>
-              <button>
-                <i class="fas fa-folder"></i> Proyecto 6
-              </button>
-            </li>
-            <li>
-              <button>
-                <i class="fas fa-folder"></i> Proyecto 7
-              </button>
-            </li>
+          <ul className="project-list">
+            {
+              projects.map((p) =>
+                p.id == projectId ? (
+                  <button
+                    onClick={() => handleNavigate(p.id)}
+                    className="active"
+                    key={p.id}
+                  >
+                    <i className="fas fa-folder"></i> { p.titulo }
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleNavigate(p.id)}
+                    key={p.id}
+                  >
+                    <i className="fas fa-folder"></i> {p.titulo}
+                  </button>
+                )
+              )
+            }
           </ul>
         </aside>
 
@@ -329,6 +336,10 @@ const Project = ({ projectId }) => {
                       onChange={(e) => handleObjetivoChange(2, e.target.value)}
                       placeholder="Objetivo principal"
                     />
+                  </div>
+                  <div>
+                    <button
+                      class="btn-add-objective">Agregar</button>
                   </div>
                 </div>
               </div>

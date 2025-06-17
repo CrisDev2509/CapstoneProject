@@ -18,7 +18,7 @@ function DataTree(tasks) {
 }
 
 export default function EDT({ tasks }) {
-  const [data, setTreeData] = useState(null); // null porque no es un array
+  const [data, setTreeData] = useState(null);
 
   useEffect(() => {
     if (tasks && tasks.length > 0) {

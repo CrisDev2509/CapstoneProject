@@ -1,11 +1,18 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import Hud from "../../components/hud/Hud";
 import Footer from "../../components/footer/Footer";
 import NewProjectModal from "../../components/modal/NewProjectModal";
 
-const Home = ({ onProjectCreated }) => {
+const Home = () => {
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
+
+  const handleProjectCreated = (projectId) => {
+    setShowModal(false);
+    navigate(`/project/${projectId}`);
+  };
 
   return (
     <div className="home-container">
@@ -16,7 +23,7 @@ const Home = ({ onProjectCreated }) => {
         <NewProjectModal
           visible={showModal}
           onClose={() => setShowModal(false)}
-          onProjectCreated={onProjectCreated}
+          onProjectCreated={handleProjectCreated}
         />
 
         <h1>PLANNING TOOL</h1>

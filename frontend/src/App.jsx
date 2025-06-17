@@ -1,24 +1,17 @@
-import { useState } from "react";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from "./contexts/AuthContext";
 import Home from "./views/home/Home";
 import Project from "./views/project/Project";
 
 function App() {
-  const [currentView, setCurrentView] = useState("home");
-  const [currentProjectId, setCurrentProjectId] = useState(null);
-
-  const handleProjectCreated = (projectId) => {
-    setCurrentProjectId(projectId);
-    setCurrentView("project");
-  };
-
   return (
     <AuthProvider>
-      {currentView === "project" && currentProjectId ? (
-        <Project projectId={currentProjectId} />
-      ) : (
-        <Home onProjectCreated={handleProjectCreated} />
-      )}
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/project/:projectId" element={<Project />} />
+        </Routes>
+      </BrowserRouter>
     </AuthProvider>
   );
 }

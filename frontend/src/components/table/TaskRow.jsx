@@ -54,6 +54,11 @@ export default function TaskRow({ task, level, onUpdate, projectId }) {
   };
 
   const saveTask = () => {
+  if (!task?.id) {
+    alert("ID de tarea no válido.");
+    return;
+  }
+
   fetch(`http://localhost:5000/tareas/${task.id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
@@ -61,7 +66,7 @@ export default function TaskRow({ task, level, onUpdate, projectId }) {
       nombre: taskData.nombre,
       fecha_inicio: taskData.fecha_inicio,
       fecha_fin: taskData.fecha_fin,
-      presupuesto: taskData.presupuesto
+      presupuesto: taskData.presupuesto !== "" ? parseFloat(taskData.presupuesto) : 0,
     }),
   })
     .then((res) => {
@@ -69,7 +74,24 @@ export default function TaskRow({ task, level, onUpdate, projectId }) {
       return res.json();
     })
     .then((data) => {
-      console.log("Guardado con éxito:", data);
+      console.log("Actualizado con éxito:", data);
+      onUpdate((prevTasks) => {
+          const updateTasks = (tasks) =>
+            tasks.map((t) => {
+              if (t.id === task.id) {
+                return {
+                  ...t,
+                  nombre: taskData.nombre,
+                  fecha_inicio: taskData.fecha_inicio,
+                  fecha_fin: taskData.fecha_fin,
+                  presupuesto: taskData.presupuesto !== "" ? parseFloat(taskData.presupuesto) : 0,
+                };
+              }
+              return t;
+            });
+
+          return updateTasks(prevTasks);
+        });
       setIsEditing(false);
     })
     .catch((err) => {
@@ -88,9 +110,9 @@ const deleteTask = () => {
   })
     .then((res) => {
       if (!res.ok) throw new Error("Error al eliminar tarea");
-      onUpdate((prevTasks) =>
-        prevTasks.filter((t) => t.id !== task.id)
-      );
+      onUpdate((prevTasks) => {
+          return updateTasks(prevTasks);
+        });
     })
     .catch((error) => {
       console.error("Error al eliminar tarea:", error);
